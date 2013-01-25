@@ -15,7 +15,7 @@ int getId(Json json){
 		}
 		i = i + 1;
 	}
-	return -1; //FIXME error handleing
+	return -1; //FIXME error handling
 }
 
 Json parseResult() {

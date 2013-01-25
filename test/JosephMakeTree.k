@@ -97,7 +97,7 @@ void GenerateTree1(API repo) {
 	repo.InsertLink(id, g4_2 , s4);
 
 	Goal g5_1 = makeGoal(repo, id, "直接ルーティング可能である");
-	repo.InsertLink(id, s4, g4_3);
+	repo.InsertLink(id, s4, g5_1);
 	Evidence e5_1 = makeEvidence(repo, id, "RoutingDirectly.ds", true);
 	repo.InsertLink(id, g5_1, e5_1);
 

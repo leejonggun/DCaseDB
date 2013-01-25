@@ -1,23 +1,26 @@
- - (Demo.ds:11)  - (CheckNIC.ds:22) false
+ - (Demo.ds:11)  - (CheckNIC.ds:22) true
 
- - (Demo.ds:14)  - (Connection.ds:22) false
+ - (Demo.ds:14)  - (Connection.ds:22) true
 
- - (Demo.ds:17)  - (CheckIPAddress.ds:15) false
+ - (Demo.ds:17)  - (CheckIPAddress.ds:15) true
 
- - (Demo.ds:23)  - (RecognitionGW.ds:20) false
+ - (Demo.ds:20)  - (RoutingDirectly.ds:36) false
 
- - (Demo.ds:26)  - (FirewallIPInput.ds:28) false
+ - (Demo.ds:23)  - (RoutingDefault.ds:20) true
 
- - (Demo.ds:29)  - (FirewallIPForward.ds:28) false
+ - (Demo.ds:29)  - (FirewallIPInput.ds:28) true
 
- - (Demo.ds:32)  - (FirewallIPOutput.ds:28) false
+ - (Demo.ds:32)  - (FirewallIPForward.ds:28) true
 
- - (Demo.ds:35)  - (FirewallTCPInput.ds:28) false
+ - (Demo.ds:35)  - (FirewallIPOutput.ds:28) true
 
- - (Demo.ds:38)  - (FirewallTCPForward.ds:28) false
+ - (Demo.ds:38)  - (FirewallTCPInput.ds:28) true
 
- - (Demo.ds:41)  - (FirewallTCPOutput.ds:28) false
+ - (Demo.ds:41)  - (FirewallTCPForward.ds:28) true
 
- - (Demo.ds:60)  - (Nslookup.ds:69) false
+ - (Demo.ds:44)  - (FirewallTCPOutput.ds:28) true
 
- - (Demo.ds:65)  - (Ping.ds:69) false
+ - (Demo.ds:50)  - (Nslookup.ds:41) true
+
+ - (Demo.ds:68)  - (Ping.ds:69) true
+
