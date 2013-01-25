@@ -29,6 +29,7 @@ class DBNode {
 		this.isEvidence  = isEvidence;
 		this.children    = [];
 		this.lazy_children = Json.parse("[]");
+		this.argument_id = -1;
 	}
 
 	DBNode(int node_id, String description) {
@@ -37,6 +38,7 @@ class DBNode {
 		this.isEvidence  = false;
 		this.children    = [];
 		this.lazy_children = Json.parse("[]");
+		this.argument_id = -1;
 	}
 
 	DBNode(int node_id) {
@@ -45,9 +47,11 @@ class DBNode {
 		this.isEvidence  = false;
 		this.children    = [];
 		this.lazy_children = Json.parse("[]");
+		this.argument_id = -1;
 	}
 
 	DBNode(Json content) {
+		this.argument_id = -1;
 		this.description = "";
 		this.isEvidence  = false;
 		this.children    = [];
@@ -110,12 +114,6 @@ class DBNode {
 		//Abstract
 		return NULL;
 	}
-
-	/*Joseph*/
-//	@Public Json GetEvidence() {
-//		//Abstract
-//		return NULL;
-//	}
 
 	@Public int AddContext(Json context) {
 		//Abstract
@@ -418,8 +416,17 @@ class Branch {
 		Json children = Json.parse("[]");
 		//for(int i = 0; i < node.children.getSize(); i = i + 1) {
 		int i = 0;
+		int id = node.argument_id;
 		while(i < node.children.getSize()) {
-			children.add(this.PrivateArgumentTreeToJson(node.children[i]));
+			if(node.children[i].argument_id != id) {
+				Json json = new Json();
+				json.setString("type","Argument");
+				//json.setString("description",); //FIXME
+				json.setString("argument_id",id.toString());
+				children.add(json);
+			}else {
+				children.add(this.PrivateArgumentTreeToJson(node.children[i]));
+			}
 			i = i + 1;
 		}
 		json.set("children",children);
@@ -432,8 +439,17 @@ class Branch {
 		Json children = Json.parse("[]");
 		//for(int i = 0; i < this.root.children.getSize(); i = i + 1) {
 		int i = 0;
+		int id = this.root.argument_id;
 		while(i < this.root.children.getSize()) {
-			children.add(this.PrivateArgumentTreeToJson(this.root.children[i]));
+			if(this.root.children[i].argument_id != id) {
+				Json json = new Json();
+				json.setString("type","Argument");
+				//json.setString("description",); //FIXME
+				json.setString("argument_id",id.toString());
+				children.add(json);
+			}else {
+				children.add(this.PrivateArgumentTreeToJson(this.root.children[i]));
+			}
 			i = i + 1;
 		}
 		json.set("children",children);
@@ -449,8 +465,12 @@ class Branch {
 			}
 			i = i + 1;
 		}
-		this.nodes.add(node);
-		return true;
+		if(node.argument_id == -1) {
+			this.nodes.add(node);
+			node.argument_id = this.argument_id;
+			return true;
+		}
+		return false;
 	}
 
 	void RemoveNode(DBNode node) {
@@ -490,7 +510,8 @@ class DCaseArgument {
 	}
 
 	Commit Commit(String method, Json argument) {
-		return this.commits.addCommit(method,argument);
+		//TODO
+		//return this.commits.addCommit(method,argument);
 	}
 
 	@Public Branch GetBranch(int BranchId) {
@@ -569,8 +590,6 @@ class DBDriver {
 	void UpdateDBNode(DBNode node, String description, boolean isEvidence) {}
 
 	void UpdateDBNode(DBNode node, boolean isEvidence) {}
-
-	void UpdateDBNodeName(DBNode node, String name) {}
 
 	Json GetArgumentIdList() {}
 
@@ -658,7 +677,7 @@ class DriverMySQL extends DBDriver {
 	}
 
 	Json GetDBNodeById(int nodeId) {
-		ResultSet r = this.con.query("SELECT argument_id,branch_id FROM DBNode WHERE id="+ nameId +"");
+		ResultSet r = this.con.query("SELECT argument_id,branch_id FROM DBNode WHERE id="+ nodeId +"");
 		r.next();
 		Json json = new Json();
 		json.setInt("argument_id",r.getInt("argument_id"));
@@ -729,7 +748,7 @@ class DriverMySQL extends DBDriver {
 		DBNode[] nodes = this.GetDBNodeList(argument_id,branch_id);
 		DBNode   root  = this.PrivateGetNode(nodes,goalId);
 		Branch branch = new Branch(nodes,root);
-		Argument argument = new Argument(branch_id,branch);
+		DCaseArgument argument = new DCaseArgument(branch_id,branch);
 		return argument;
 	}
 
@@ -772,7 +791,7 @@ class DriverMySQL extends DBDriver {
 	DCaseArgument CreateArgument() {
 		Branch branch = this.CreateBranch();
 		this.con.query("INSERT INTO Argument(master_branch_id) VALUES("+branch.branch_id+")");
-		DCaseArgument argument = new Argument(branch.branch_id, branch);
+		DCaseArgument argument = new DCaseArgument(branch.branch_id, branch);
 		argument.argument_id = this.con.getInsertId();
 		this.UpdateBranch(branch,argument.argument_id);
 		return argument;
@@ -818,12 +837,8 @@ class DriverMySQL extends DBDriver {
 		node.branch_id   = branch_id;
 	}
 
-	void UpdateDBNodeName(DBNode node, String name) {
-		this.con.query("UPDATE DBNode SET name="+name+" WHERE id="+node.node_id);
-	}
-
 	void UpdateDBNode(DBNode node, String description) {
-		this.con.query("UPDATE DBNode SET description="+description+" WHERE id="+node.node_id);
+		this.con.query("UPDATE DBNode SET description='"+description+"' WHERE id="+node.node_id);
 	}
 
 	void UpdateDBNode(DBNode node, String description, boolean isEvidence) {
@@ -831,7 +846,7 @@ class DriverMySQL extends DBDriver {
 		if(isEvidence){
 			evidence = "TRUE";
 		}
-		this.con.query("UPDATE DBNode SET description="+description+", evidence_flag="+evidence +" WHERE id="+node.node_id);
+		this.con.query("UPDATE DBNode SET description='"+description+"', evidence_flag="+evidence +" WHERE id="+node.node_id);
 	}
 
 	void UpdateDBNode(DBNode node, boolean isEvidence) {
@@ -953,20 +968,24 @@ class API {
 		//TODO Commit
 	}
 
+	//FIXME return boolean
 	//FIXME Json contents
-	@Public void UpdateDBNode(int argument_id, DBNode node, Json contents) {
-		int masterId = this.GetArgument(id).masterBranchId;
-		this.UpdateDBNode(argument_id, masterId, node, contents);
+	@Public boolean UpdateDBNode(int argument_id, DBNode node, Json contents) {
+		int masterId = this.GetArgument(argument_id).masterBranchId;
+		return this.UpdateDBNode(argument_id, masterId, node, contents);
 	}
 
-	@Public void UpdateDBNode(String argument_id, String branch_id, DBNode node, Json contents) {
+	@Public boolean UpdateDBNode(int argument_id, int branch_id, DBNode node, Json contents) {// @yoan
+	//@Public void UpdateDBNode(String argument_id, String branch_id, DBNode node, Json contents) {
 		node.Update(contents);
-		if(contents.haskey("description")) {
-			this.db.UpdateDBNode(node.node_id, contents.getString("description"));
+		if(contents.hasKey("description")) {
+			// @yoan what UpdateDBNode method is called?
+			this.db.UpdateDBNode(node, contents.getString("description"));
 		}
-		if(contents.haskey("isEvidence")) {
-			this.db.UpdateDBNode(node.node_id, contents.getBoolean("isEvidence"));
+		if(contents.hasKey("isEvidence")) {
+			this.db.UpdateDBNode(node, contents.getBoolean("isEvidence"));
 		}
+		return true;
 		//TODO Commit Log
 	}
 
@@ -1013,11 +1032,6 @@ class API {
 	@Public Json GetContext(DBNode node) {
 		return node.GetContext();
 	}
-
-	/*Joseph*/
-//	@Public Json GetEvidence(DBNode node) {
-//		return node.GetEvidence();
-//	}
 
 	@Public Json Search(String text) {
 		return this.db.Search(text);
