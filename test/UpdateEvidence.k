@@ -50,8 +50,6 @@ void main() {
 
 	Json db_node = repo.Search(".ds","Evidence");
 
-
-
 	Json evidence_result = parseResult();
 
 	int argument_id = getId(repo.GetArgumentIds());
@@ -65,30 +63,20 @@ void main() {
 		i = i + 1;
 	}
 
-	//Update( From DB = evidence_result)
+//Update( From DB = evidence_result)
 	i = 0;
 	while (i < db_node.getSize()) {
 		int db_argument_id = db_node[i].getString("argument_id").toint();
-		System.p(db_argument_id);
-
+//Evidence node has the TopGoal's id(argument_id)
 		if (db_argument_id == argument_id) {
 			int node_id = db_node[i].getString("node_id").toint();
 			DBNode node = argument.GetDBNode(node_id);
-			System.p(argument.toJson());
-
 			db_node[i].setBoolean("isEvidence", outmap.get(db_node[i].getString("description")));
-
-			System.p("args_id: " + argument_id);
-			System.p("node_id: " + node_id);
-			System.p("node: " + node);
-
-			if (node != null) { // why null is exists? 
-				repo.UpdateDBNode(argument_id, node, db_node[i]);
-			}
+			repo.UpdateDBNode(argument_id, node, db_node[i]);
 		}
 		i = i + 1;
 	}
 
-//	System.p(db_node);
+	System.p(db_node);
 }
 main();

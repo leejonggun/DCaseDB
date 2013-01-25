@@ -18,4 +18,6 @@
 
  - (Demo.ds:41)  - (FirewallTCPOutput.ds:28) false
 
+ - (Demo.ds:60)  - (Nslookup.ds:69) false
+
  - (Demo.ds:65)  - (Ping.ds:69) false
