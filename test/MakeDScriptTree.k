@@ -1,4 +1,4 @@
-Import("dcasecloud");
+load("../dcasecloud_glue.k");
 Import("JavaStyle.Object");
 Import("Type.Json");
 //Import("konoha.object");

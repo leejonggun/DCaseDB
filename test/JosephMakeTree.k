@@ -151,7 +151,7 @@ void GenerateTree1(API repo) {
 }
 
 void main() {
-	API repo = new API("dcasedb","dcasedb");
+	API repo = new API("konoha","konoha");
 	GenerateTree1(repo);
 }
 

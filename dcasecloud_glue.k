@@ -111,6 +111,12 @@ class DBNode {
 		return NULL;
 	}
 
+	/*Joseph*/
+//	@Public Json GetEvidence() {
+//		//Abstract
+//		return NULL;
+//	}
+
 	@Public int AddContext(Json context) {
 		//Abstract
 	}
@@ -1007,6 +1013,11 @@ class API {
 	@Public Json GetContext(DBNode node) {
 		return node.GetContext();
 	}
+
+	/*Joseph*/
+//	@Public Json GetEvidence(DBNode node) {
+//		return node.GetEvidence();
+//	}
 
 	@Public Json Search(String text) {
 		return this.db.Search(text);
