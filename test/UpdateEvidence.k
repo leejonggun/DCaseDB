@@ -1,0 +1,94 @@
+load("../DCaseCloud_glue.k");
+
+Import("cstyle.file");
+Import("cstyle");
+Import("JavaScript.Regexp");
+Import("JavaScript.String");
+Import("Java.String");
+Import("MiniKonoha.Map");
+
+int getId(Json json){
+	int i = 0;
+	while(i < json.getSize()) {
+		if(/診断スクリプトが正常に動作する/.test(json[i].getString("description"))) {
+			return json[i].getString("argument_id").toint();
+		}
+		i = i + 1;
+	}
+	return -1; //FIXME error handleing
+}
+
+Json parseResult() {
+	FILE result = new FILE("output.txt", "r");
+
+	String Diagscript;
+	String evidence_flag;
+	String parse;
+	String[] parsed;
+	Json array_json = Json.parse("[]");
+
+	while ((parse = result.readLine()) != null) {
+		parsed = parse.split(/ +/);
+		if (parsed.getLength() > 1) {
+			Json json = new Json();
+
+			evidence_flag = (parsed.get(parsed.getLength() - 1));
+			Diagscript = parsed.get(parsed.getLength() - 2);
+			Diagscript = Diagscript.substring(1, Diagscript.indexOf(":"));
+
+			json.setString("description", Diagscript);
+			json.setBoolean("result", evidence_flag.equals("true"));
+			array_json.add(json);
+		}
+	}
+	return array_json;
+}
+
+void main() {
+
+	API repo = new API("konoha","konoha");
+
+	Json db_node = repo.Search(".ds","Evidence");
+
+
+
+	Json evidence_result = parseResult();
+
+	int argument_id = getId(repo.GetArgumentIds());
+	DCaseArgument argument = repo.GetArgument(argument_id);
+
+	//Mapping
+	int i = 0;
+	Map[boolean] outmap = new Map[boolean]();
+	while (i < evidence_result.getSize()) {
+		outmap.set(evidence_result[i].getString("description"), evidence_result[i].getBoolean("result"));
+		i = i + 1;
+	}
+
+	//Update( From DB = evidence_result)
+	i = 0;
+	while (i < db_node.getSize()) {
+		int db_argument_id = db_node[i].getString("argument_id").toint();
+		System.p(db_argument_id);
+
+		if (db_argument_id == argument_id) {
+			int node_id = db_node[i].getString("node_id").toint();
+			DBNode node = argument.GetDBNode(node_id);
+			System.p(argument.toJson());
+
+			db_node[i].setBoolean("isEvidence", outmap.get(db_node[i].getString("description")));
+
+			System.p("args_id: " + argument_id);
+			System.p("node_id: " + node_id);
+			System.p("node: " + node);
+
+			if (node != null) { // why null is exists? 
+				repo.UpdateDBNode(argument_id, node, db_node[i]);
+			}
+		}
+		i = i + 1;
+	}
+
+//	System.p(db_node);
+}
+main();
