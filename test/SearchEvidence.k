@@ -23,8 +23,3 @@ void main() {
 }
 
 main();
-
-//DBNode node = this.GetArgument(argument_id).GetDBNode(node_id);
-//Json json = new Json();
-//json.setBoolean("isEvidence",false/*output.txt*/);
-//repo.UpdateDBNode(argument_id,node,json);

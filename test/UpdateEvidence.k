@@ -18,8 +18,8 @@ int getId(Json json){
 	return -1; //FIXME error handling
 }
 
-Json parseResult() {
-	FILE result = new FILE("output.txt", "r");
+Json parseResult(String DiagResult) {
+	FILE result = new FILE(DiagResult, "r");
 
 	String Diagscript;
 	String evidence_flag;
@@ -50,7 +50,8 @@ void main() {
 
 	Json db_node = repo.Search(".ds","Evidence");
 
-	Json evidence_result = parseResult();
+	Json evidence_result = parseResult(SCRIPT_ARGV.get(1));//give filename
+	System.p(evidence_result);
 
 	int argument_id = getId(repo.GetArgumentIds());
 	DCaseArgument argument = repo.GetArgument(argument_id);
@@ -77,6 +78,6 @@ void main() {
 		i = i + 1;
 	}
 
-	System.p(db_node);
+//	System.p(db_node);
 }
 main();
