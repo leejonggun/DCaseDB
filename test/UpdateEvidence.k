@@ -10,7 +10,7 @@ Import("MiniKonoha.Map");
 int getId(Json json){
 	int i = 0;
 	while(i < json.getSize()) {
-		if(/診断スクリプトが正常に動作する/.test(json[i].getString("description"))) {
+		if(/ネットワークに障害要因(Fault)がない/.test(json[i].getString("description"))) {
 			return json[i].getString("argument_id").toint();
 		}
 		i = i + 1;
@@ -51,7 +51,7 @@ void main() {
 	Json db_node = repo.Search(".ds","Evidence");
 
 	Json evidence_result = parseResult(SCRIPT_ARGV.get(1));//give filename
-	System.p(evidence_result);
+//	System.p(evidence_result);
 
 	int argument_id = getId(repo.GetArgumentIds());
 	DCaseArgument argument = repo.GetArgument(argument_id);

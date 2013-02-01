@@ -33,7 +33,7 @@ Context makeContext(API repo, int argumentId, String description) {
 }
 
 void GenerateTree1(API repo) {
-	DCaseArgument argument = repo.CreateArgument("診断スクリプトが正常に動作する");
+	DCaseArgument argument = repo.CreateArgument("ネットワークに障害要因(Fault)がない");
 	int id = argument.argument_id;
 
 	DBNode root = repo.GetArgument(id).GetRoot();
@@ -47,16 +47,16 @@ void GenerateTree1(API repo) {
 	Strategy s1 = makeStrategy(repo, id, "レイヤーレベルで議論する");
 	repo.InsertLink(id, root, s1);
 
-	Goal g2_1 = makeGoal(repo, id, "ネットワークインターフェース層は正常である");
+	Goal g2_1 = makeGoal(repo, id, "データリンク層に障害要因がない");
 	repo.InsertLink(id, s1 , g2_1);
 
-	Goal g2_2 = makeGoal(repo, id, "インターネット層は正常である");
+	Goal g2_2 = makeGoal(repo, id, "インターネット層に障害要因がない");
 	repo.InsertLink(id, s1 , g2_2);
 
-	Goal g2_3 = makeGoal(repo, id, "トランスポート層は正常である");
+	Goal g2_3 = makeGoal(repo, id, "トランスポート層に障害要因がない");
 	repo.InsertLink(id, s1 , g2_3);
 
-	Goal g2_4 = makeGoal(repo, id, "アプリケーション層は正常である(名前解決可能である)");
+	Goal g2_4 = makeGoal(repo, id, "アプリケーション層に障害要因がない");
 	repo.InsertLink(id, s1 , g2_4);
 	Evidence e2_4 = makeEvidence(repo, id, "Nslookup.ds", true);
 	repo.InsertLink(id, g2_4, e2_4);
@@ -91,7 +91,7 @@ void GenerateTree1(API repo) {
 	repo.InsertLink(id, s3, g4_2);
 
 	Goal g4_3 = makeGoal(repo, id, "firewall設定によりIPレベルでパケットが破棄されない");
-	repo.InsertLink(id, s3, g4_2);
+	repo.InsertLink(id, s3, g4_3);
 
 	Strategy s4 = makeStrategy(repo, id, "ルーティングテーブルを基に議論する");
 	repo.InsertLink(id, g4_2 , s4);
