@@ -292,6 +292,23 @@ class Evidence extends DBNode {
 }
 
 //TODO
+class DScriptEvidence extends Evidence {
+	@Public Json toJson() {
+		Json json = this.PrivateToJson();
+		json.setString("type","DScriptEvidence");
+		return json;
+	}
+}
+
+class DScriptContext extends Context {
+	@Public Json toJson() {
+		Json json = this.PrivateToJson();
+		json.setString("type","DScriptContext");
+		return json;
+	}
+}
+
+//TODO
 class Justification extends DBNode {
 	Justification(){}
 
@@ -599,6 +616,7 @@ class DBDriver {
 
 	Json Search(String text) {}
 	Json Search(String text,String nodeType) {}
+	boolean RemoveNode(DBNode node) {}
 }
 
 class DriverMySQL extends DBDriver {
@@ -638,7 +656,7 @@ class DriverMySQL extends DBDriver {
 	Json Search(String text, String nodeType) {
 		Json json = new Json([]);
 		//FIXME
-		ResultSet r = this.con.query("SELECT DBNode.id,argument_id,branch_id,type_name,description,evidence_flag FROM DBNode,NodeType WHERE nodeType_id=NodeType.id AND type_name='"+nodeType+"' AND description LIKE '%"+text+"%'");
+		ResultSet r = this.con.query("SELECT DBNode.id,argument_id,branch_id,type_name,description FROM DBNode,NodeType WHERE nodeType_id=NodeType.id AND type_name='"+nodeType+"' AND description LIKE '%"+text+"%'");
 		while(r.next()) {
 			Json j = new Json();
 			j.setString("node_id",r.getInt("id").toString());
@@ -646,15 +664,15 @@ class DriverMySQL extends DBDriver {
 			j.setString("branch_id",r.getInt("branch_id").toString());
 			j.setString("type",r.getString("type_name"));
 			j.setString("description",r.getString("description"));
-			j.setBoolean("isEvidence",r.getBoolean("evidence_flag"));
+//			j.setBoolean("isEvidence",r.getBoolean("evidence_flag"));
 			json.add(j);
 		}
 		return json;
 	}
 
 	Json Search(String text) {
-		Json json = Json.parse("[]");
-		ResultSet r = this.con.query("SELECT DBNode.id,argument_id,branch_id,type_name,description,evidence_flag FROM DBNode,NodeType WHERE nodeType_id=NodeType.id AND description LIKE '%"+text+"%'");
+		Json json = new Json([]);
+		ResultSet r = this.con.query("SELECT DBNode.id,argument_id,branch_id,type_name,description FROM DBNode,NodeType WHERE nodeType_id=NodeType.id AND description LIKE '%"+text+"%'");
 		while(r.next()) {
 			Json j = new Json();
 			j.setString("node_id",r.getInt("id").toString());
@@ -662,7 +680,7 @@ class DriverMySQL extends DBDriver {
 			j.setString("branch_id",r.getInt("branch_id").toString());
 			j.setString("type",r.getString("node_type"));
 			j.setString("description",r.getString("description"));
-			j.setBoolean("isEvidence",r.getBoolean("evidence_flag"));
+//			j.setBoolean("isEvidence",r.getBoolean("evidence_flag"));
 			json.add(j);
 		}
 		return json;
@@ -677,6 +695,10 @@ class DriverMySQL extends DBDriver {
 			return new Context(content);
 		} else if (NodeType == "Evidence") {
 			return new Evidence(content);
+		} else if (NodeType == "DScriptEvidence") {
+			return new DScriptEvidence(content);
+		} else if (NodeType == "DScriptContext") {
+			return new DScriptContext(content);
 		}
 		return null; //FIXME
 	}
@@ -917,7 +939,7 @@ class API {
 	DBDriver db;
 
 	@Public API() {
-		arguments = new Map[Argument];
+		arguments = new Map[DCaseArgument];
 	}
 
 	@Public API(String userName, String password) {
@@ -937,13 +959,13 @@ class API {
 		DCaseArgument argument = this.db.CreateArgument(description);
 		this.arguments.set(argument.argument_id.toString(), argument);
 
-		Goal g = this.CreateDBNode(argument.argument_id,content) as Goal;
+		Goal g = this.CreateDBNode(content) as Goal;
 		argument.SetRoot(g);
 		this.db.SetRoot(argument.argument_id,g.node_id);
 
 		Json context_json = new Json();
 		context_json.setString("type","Context");
-		Context c = this.CreateDBNode(argument.argument_id,context_json) as Context;
+		Context c = this.CreateDBNode(context_json) as Context;
 		this.InsertLink(argument.argument_id, g, c);
 		this.db.UpdateDBNode(c,argument.argument_id,argument.masterBranchId);
 		argument.GetBranch(argument.masterBranchId).nodes.add(c);
@@ -969,7 +991,7 @@ class API {
 		return []; //FIXME
 	}
 
-	@Public DBNode CreateDBNode(int argument_id, Json content) {
+	@Public DBNode CreateDBNode(Json content) {
 		String NodeType = content.getString("type");
 		return this.db.CreateDBNode(NodeType,content);
 	}
@@ -1030,7 +1052,7 @@ class API {
 
 	@Public boolean DeleteDBNode(int argument_id, int branch_id, int node_id) {
 		Branch branch = this.GetArgument(argument_id).GetBranch(branch_id);
-		DBNode node = branch.GetDBNode(ndoeId);
+		DBNode node = branch.GetDBNode(node_id);
 		branch.RemoveNode(node);
 		return this.db.RemoveNode(node);
 	}
