@@ -26,6 +26,14 @@ Evidence makeEvidence(API repo, int argumentId, String description, boolean flag
 	return repo.CreateDBNode(argumentId, json) as Evidence;
 }
 
+DScriptEvidence makeDScriptEvidence(API repo, int argumentId, String description, boolean flag) {
+	Json json = new Json();
+	json.setString("description",description);
+	json.setBoolean("isEvidence",flag);
+	json.setString("type","DScriptEvidence");
+	return repo.CreateDBNode(argumentId, json) as DScriptEvidence;
+}
+
 Context makeContext(API repo, int argumentId, String description) {
 	Json json = new Json();
 	json.setString("description",description);

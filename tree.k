@@ -1,18 +1,15 @@
 #!/usr/local/bin/minikonoha
 
-//Import("Type.File");
-import("cstyle.file");
-load("dcasedb_glue.k");
+Import("cstyle.file");
+Import("Deos.DCaseCloud");
 
 
 void main() {
-	String TreeName = "BasicSyntax";
 
-	DCaseDB repo = new DCaseDB();
-	repo.Connect("dcasedb","dcasedb");
+	API repo = new API("dcasedb","dcasedb");
 
 	stdout.println("Content-type: application/json; charset=UTF-8\n\n");
-	stdout.println(repo.SearchArgument(TreeName).toJson());
+	stdout.println(repo.GetArgument(1).toJson());
 }
 
 main();
