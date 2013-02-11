@@ -1,4 +1,5 @@
-Load("../DCaseCloud_glue.k");
+//Load("../DCaseCloud_glue.k");
+Import("Deos.DCaseCloud");
 Import("JavaStyle.Object");
 Import("Type.Json");
 //Import("konoha.object");
