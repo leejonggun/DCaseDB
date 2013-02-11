@@ -32,7 +32,7 @@ Context makeContext(API repo, int argumentId, String description) {
 }
 
 void GenerateTree1(API repo) {
-	DCaseArgument argument = repo.CreateArgument("FirewallTCPForward.dsは正しく動作する");
+	DCaseArgument argument = repo.CreateArgument("CheckIPAddress.dsは正しく動作する");
 	int id = argument.argument_id;
 
 	DBNode root = repo.GetArgument(id).GetRoot();
@@ -43,23 +43,31 @@ void GenerateTree1(API repo) {
 //	json.setString("DEST","192.168.0.2");
 //	repo.AddContext(id, root.node_id, json);
 
-	Strategy s1 = makeStrategy(repo, id, "firewallのFORWARDルール設定を考慮する");
+	Strategy s1 = makeStrategy(repo, id, "IPアドレスの衝突問題を議論する");
 	repo.InsertLink(id, root, s1);
 
-	Goal g1_1 = makeGoal(repo, id, "TCPプロトコルをDROPしていない");
+	Goal g1_1 = makeGoal(repo, id, "");
 	repo.InsertLink(id, s1 , g1_1);
-	Evidence e1_1 = makeEvidence(repo, id, "firewall table(iptables)設定を確認する", true);
+	Evidence e1_1 = makeEvidence(repo, id, "", true);
 	repo.InsertLink(id, g2_4, e2_4);
 
-	Goal g1_2 = makeGoal(repo, id, "TCPプロトコルをREJECTしていない");
+	Goal g1_2 = makeGoal(repo, id, "");
 	repo.InsertLink(id, s1 , g1_2);
-	Evidence e1_2 = makeEvidence(repo, id, "firewall table(iptables)設定を確認する", true);
+	Evidence e1_2 = makeEvidence(repo, id, "", true);
 	repo.InsertLink(id, g1_2, e1_2);
 
-	Goal g1_3 = makeGoal(repo, id, "TCPプロトコルをACCEPTしている");
-	repo.InsertLink(id, s1 , g1_3);
-	Evidence e1_3 = makeEvidence(repo, id, "firewall table(iptables)設定を確認する", true);
-	repo.InsertLink(id, g1_3, e1_3);
+	Strategy s2 = makeStrategy(repo, id, "");
+	repo.InsertLink(id, root, s2);
+
+	Goal g2_1 = makeGoal(repo, id, "");
+	repo.InsertLink(id, s2 , g2_1);
+	Evidence e2_1 = makeEvidence(repo, id, "", true);
+	repo.InsertLink(id, g2_1, e2_1);
+
+	Goal g2_2 = makeGoal(repo, id, "");
+	repo.InsertLink(id, s2 , g2_2);
+	Evidence e2_2 = makeEvidence(repo, id, "", true);
+	repo.InsertLink(id, g2_2, e2_2);
 
 	System.p(repo.GetArgument(id).toJson());
 	System.p(repo.GetArgumentIds());
