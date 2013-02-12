@@ -278,8 +278,10 @@ CREATE TABLE IF NOT EXISTS `NodeType` (
 INSERT INTO `NodeType` (`id`, `type_name`) VALUES
 (1, 'Goal'),
 (2, 'Strategy'),
+(3, 'DScriptContext'),
 (4, 'Context'),
 (5, 'Evidence');
+(6, 'DScriptEvidence');
 
 --
 -- ダンプしたテーブルの制約
