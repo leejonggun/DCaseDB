@@ -26,6 +26,14 @@ Evidence makeEvidence(API repo, String description, boolean flag) {
 	return repo.CreateDBNode(json) as Evidence;
 }
 
+DScriptEvidence makeDScriptEvidence(API repo, String description, boolean flag) {
+	Json json = new Json();
+	json.setString("description",description);
+	json.setBoolean("isEvidence",flag);
+	json.setString("type","DScriptEvidence");
+	return repo.CreateDBNode(json) as DScriptEvidence;
+}
+
 Context makeContext(API repo, String description) {
 	Json json = new Json();
 	json.setString("description",description);
@@ -59,7 +67,7 @@ void GenerateTree1(API repo) {
 
 	Goal g2_4 = makeGoal(repo, "アプリケーション層に障害要因がない");
 	repo.InsertLink(id, s1 , g2_4);
-	Evidence e2_4 = makeEvidence(repo, "Nslookup.ds", true);
+	DScriptEvidence e2_4 = makeDScriptEvidence(repo, "Nslookup.ds", true);
 	repo.InsertLink(id, g2_4, e2_4);
 
 	Strategy s2 = makeStrategy(repo, "PCや周辺機器の状態により議論する");
@@ -72,12 +80,12 @@ void GenerateTree1(API repo) {
 
 	Goal g3_1 = makeGoal(repo, "イーサネットカードが認識されている");
 	repo.InsertLink(id, s2, g3_1);
-	Evidence e3_1 = makeEvidence(repo, "CheckNIC.ds", true);
+	DScriptEvidence e3_1 = makeDScriptEvidence(repo, "CheckNIC.ds", true);
 	repo.InsertLink(id, g3_1, e3_1);
 
 	Goal g3_2 = makeGoal(repo, "イーサネットインターフェースが有効になっている");
 	repo.InsertLink(id, s2, g3_2);
-	Evidence e3_2 = makeEvidence(repo, "Connection.ds", true);
+	DScriptEvidence e3_2 = makeDScriptEvidence(repo, "Connection.ds", true);
 	repo.InsertLink(id, g3_2, e3_2);
 
 	Strategy s3 = makeStrategy(repo, "インターネット層の持つ役割を基に議論する");
@@ -85,7 +93,7 @@ void GenerateTree1(API repo) {
 
 	Goal g4_1 = makeGoal(repo, "IPアドレスが割り当てられている");
 	repo.InsertLink(id, s3, g4_1);
-	Evidence e4_1 = makeEvidence(repo, "CheckIPAddress.ds", true);
+	DScriptEvidence e4_1 = makeDScriptEvidence(repo, "CheckIPAddress.ds", true);
 	repo.InsertLink(id, g4_1, e4_1);
 
 	Goal g4_2 = makeGoal(repo, "ルーティング可能である");
@@ -117,17 +125,17 @@ void GenerateTree1(API repo) {
 
 	Goal g6_1 = makeGoal(repo, "INPUTチェーンではパケットを受け入れている");
 	repo.InsertLink(id, s5, g6_1);
-	Evidence e6_1 = makeEvidence(repo, "FirewallIPInput.ds", true);
+	DScriptEvidence e6_1 = makeDScriptEvidence(repo, "FirewallIPInput.ds", true);
 	repo.InsertLink(id, g6_1, e6_1);
 
 	Goal g6_2 = makeGoal(repo, "FORWARDチェーンではパケットを受け入れている");
 	repo.InsertLink(id, s5, g6_2);
-	Evidence e6_2 = makeEvidence(repo, "FirewallIPForward.ds", true);
+	DScriptEvidence e6_2 = makeDScriptEvidence(repo, "FirewallIPForward.ds", true);
 	repo.InsertLink(id, g6_2, e6_2);
 
 	Goal g6_3 = makeGoal(repo, "OUTPUTチェーンではパケットを受け入れている");
 	repo.InsertLink(id, s5, g6_3);
-	Evidence e6_3 = makeEvidence(repo, "FirewallIPOutput.ds", true);
+	DScriptEvidence e6_3 = makeDScriptEvidence(repo, "FirewallIPOutput.ds", true);
 	repo.InsertLink(id, g6_3, e6_3);
 
 	Strategy s6 = makeStrategy(repo, "firewall設定を考慮する");
@@ -135,17 +143,17 @@ void GenerateTree1(API repo) {
 
 	Goal g7_1 = makeGoal(repo, "受信するTCPプロトコルのパケットを破棄しない");
 	repo.InsertLink(id, s6, g7_1);
-	Evidence e7_1 = makeEvidence(repo, "FirewallTCPInput.ds", true);
+	DScriptEvidence e7_1 = makeDScriptEvidence(repo, "FirewallTCPInput.ds", true);
 	repo.InsertLink(id, g7_1, e7_1);
 
 	Goal g7_2 = makeGoal(repo, "中継するTCPプロトコルのパケットを破棄しない");
 	repo.InsertLink(id, s6, g7_2);
-	Evidence e7_2 = makeEvidence(repo, "FirewallTCPForward.ds", true);
+	DScriptEvidence e7_2 = makeDScriptEvidence(repo, "FirewallTCPForward.ds", true);
 	repo.InsertLink(id, g7_2, e7_2);
 
 	Goal g7_3 = makeGoal(repo, "送信するTCPプロトコルのパケットを破棄しない");
 	repo.InsertLink(id, s6, g7_3);
-	Evidence e7_3 = makeEvidence(repo, "FirewallTCPOutput.ds", true);
+	DScriptEvidence e7_3 = makeDScriptEvidence(repo, "FirewallTCPOutput.ds", true);
 	repo.InsertLink(id, g7_3, e7_3);
 
 	System.p(repo.GetArgument(id).toJson());
