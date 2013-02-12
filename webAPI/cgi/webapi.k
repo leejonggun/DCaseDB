@@ -16,7 +16,7 @@ Import("MiniKonoha.Syntax"); // for debug
 
 Load("utils.k");
 
-API repo = new API("dcasedb", "dcasedb");
+API repo = new API("konoha", "konoha");
 
 class API_Method {
 	API_Method(){}

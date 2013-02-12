@@ -27,7 +27,7 @@ Context makeContext(API repo, String description) {
 	Json json = new Json();
 	json.setString("description",description);
 	json.setString("type","Context");
-	return repo.CreateDBNode(, json) as Context;
+	return repo.CreateDBNode(json) as Context;
 }
 
 void GenerateTree1(API repo) {

@@ -280,7 +280,7 @@ INSERT INTO `NodeType` (`id`, `type_name`) VALUES
 (2, 'Strategy'),
 (3, 'DScriptContext'),
 (4, 'Context'),
-(5, 'Evidence');
+(5, 'Evidence'),
 (6, 'DScriptEvidence');
 
 --

@@ -769,6 +769,7 @@ class DriverMySQL extends DBDriver {
 				nodes.add(context);
 			} else {
 				nodes.add(node);
+//				System.p("GetDBNodeList:" + nodeType + node.node_id + "," + node.argument_id + "," + node.branch_id + ", Adr:" + node);
 			}
 		}
 		return this.GetLinks(nodes);
@@ -803,7 +804,10 @@ class DriverMySQL extends DBDriver {
 
 		DBNode[] nodes = this.GetDBNodeList(argument_id,branch_id);
 		DBNode   root  = this.PrivateGetNode(nodes,goalId);
+//		System.p("" + root + "root.node_id:" + root.node_id + "description:" + root.description);
 		Branch branch = new Branch(nodes,root);
+//		System.p("branch_id = " + branch_id);
+//		System.p("branch.nodes = " + branch.nodes);
 		DCaseArgument argument = new DCaseArgument(branch_id,branch);
 		return argument;
 	}
@@ -976,7 +980,10 @@ class API {
 			return this.arguments.get(argId);
 		}else{
 			DCaseArgument argument = this.db.GetArgument(argument_id);
+//			System.p("argument = " + argument + "argId = " + argId);
 			this.arguments.set(argId,argument);
+//			System.p("arguments = " + arguments);
+//			System.p("arguments.get(argId) = " + arguments.get(argId));
 			return argument;
 		}
 	}
@@ -1002,12 +1009,15 @@ class API {
 	@Public void InsertLink(int id, int branch_id, DBNode parent, DBNode child) {
 		Branch branch = this.GetArgument(id).GetBranch(branch_id);
 		if(branch.AddNode(parent)){
+//			System.p("parent:"+parent.description);
 			this.db.UpdateDBNode(parent,id,branch_id);
 		}
 		if(branch.AddNode(child)){
+//			System.p("child:"+child.description);
 			this.db.UpdateDBNode(child,id,branch_id);
 		}
 		parent.addChild(child);
+//		System.p("child.parent:"+child.parent+"parent:"+parent);
 		this.db.InsertLink(id,branch_id,parent.node_id,child.node_id);
 		//TODO Commit
 	}
