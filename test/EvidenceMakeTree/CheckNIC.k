@@ -53,13 +53,13 @@ void GenerateTree1(API repo) {
 
 	Goal g1_2 = makeGoal(repo, id, "正しいドライバがインストールされていない");
 	repo.InsertLink(id, s1 , g1_2);
-	Evidence e1_2 = makeEvidence(repo, id, "NICに対応するドライバをインストールしているか確認する", true);
+	Evidence e1_2 = makeEvidence(repo, id, "NICに対応するドライバをインストールしているか確認する", false);
 	repo.InsertLink(id, g1_2, e1_2);
 
 	Goal g1_3 = makeGoal(repo, id, "カーネルモジュールが有効になっていない");
 	repo.InsertLink(id, s1 , g1_3);
 //	Evidence e1_3 = makeEvidence(repo, id, "lsmodコマンドよりイーサネットモジュールが有効になっているか確認する", false);
-	Evidence e1_3 = makeEvidence(repo, id, "イーサネットモジュールが有効になっているか確認する", true);
+	Evidence e1_3 = makeEvidence(repo, id, "イーサネットモジュールが有効になっているか確認する", false);
 	repo.InsertLink(id, g1_3, e1_3);
 
 	System.p(repo.GetArgument(id).toJson());
